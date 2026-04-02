@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import testRoutes from './modules/pruebas/test.routes';
 import authRoutes from './modules/auth/auth.routes';
+import userRoutes from './modules/usuarios/user.routes';
 
 const app = express();
 
@@ -9,8 +10,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/test', testRoutes);
-//app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/usuarios', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('Backend up');
