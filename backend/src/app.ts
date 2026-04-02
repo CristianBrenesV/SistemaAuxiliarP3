@@ -13,7 +13,7 @@ app.use('/api/test', testRoutes);
 app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Backend funcionando 🚀');
+  res.send('Backend up');
 });
 
 
