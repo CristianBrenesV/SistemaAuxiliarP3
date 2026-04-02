@@ -6,7 +6,12 @@ import userRoutes from './modules/usuarios/user.routes';
 
 const app = express();
 
-app.use(cors());
+//enlace al front
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use('/api/test', testRoutes);
@@ -16,7 +21,6 @@ app.use('/api/usuarios', userRoutes);
 app.get('/', (req, res) => {
   res.send('Backend up');
 });
-
 
 app.listen(3000, () => {
   console.log('Servidor en http://localhost:3000');
