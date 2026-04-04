@@ -1,5 +1,3 @@
-import type { AuthUser } from '../../modules/auth/models/Auth';
-
 export const setToken = (token: string) => {
   localStorage.setItem('token', token);
 };
@@ -12,20 +10,26 @@ export const removeToken = () => {
   localStorage.removeItem('token');
 };
 
-export const setUserStorage = (user: AuthUser) => {
+// 🔥 USER
+
+export const setUserStorage = (user: unknown) => {
   localStorage.setItem('user', JSON.stringify(user));
 };
 
-export const getUserStorage = (): AuthUser | null => {
+export const getUserStorage = () => {
   const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
-};
 
-export const removeUserStorage = () => {
-  localStorage.removeItem('user');
+  if (!user) return null;
+
+  try {
+    return JSON.parse(user);
+  } catch (error) {
+    console.error('Error parsing user:', error);
+    return null;
+  }
 };
 
 export const clearSession = () => {
-  removeToken();
-  removeUserStorage();
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
 };

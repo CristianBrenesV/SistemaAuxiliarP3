@@ -1,13 +1,8 @@
-import { Navigate } from 'react-router-dom';
-import type { ReactNode } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 import { getToken } from '../utils/storage';
 
-interface Props {
-  children: ReactNode;
-}
-
-export default function PrivateRoute({ children }: Props) {
+export default function PrivateRoute() {
   const token = getToken();
 
-  return token ? <>{children}</> : <Navigate to="/login" />;
+  return token ? <Outlet /> : <Navigate to="/login" />;
 }

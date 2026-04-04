@@ -3,33 +3,35 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../services/auth.service';
 import { useAuth } from '../../../core/hooks/useAuth';
 import { setToken, setUserStorage } from '../../../core/utils/storage';
+import AuthLayout from '../../../core/layouts/LoginLayout';
 
 export default function Login() {
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
-const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     try {
       const data = await login(usuario, password);
 
-        setToken(data.token);
-        setUser(data.user);
-        setUserStorage(data.user);
+      setToken(data.token);
+      setUser(data.user);
+      setUserStorage(data.user);
 
-      navigate('/test');
-    }catch (error) {
-        console.error(error);
-        setError('Usuario o contraseña incorrectos');
+      navigate('/prinicipal');
+    } catch (error) {
+      console.error(error);
+      setError('Usuario o contraseña incorrectos');
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
+    <AuthLayout>
       <div
         className="card shadow-lg p-4"
         style={{ maxWidth: '400px', width: '100%', backgroundColor: '#e6e6e6' }}
@@ -44,7 +46,6 @@ const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
           <h4 className="card-title mb-3">Iniciar sesión</h4>
         </div>
 
-        {/* ERROR */}
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form onSubmit={handleLogin}>
@@ -71,12 +72,11 @@ const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
               required
             />
           </div>
-
           <button type="submit" className="btn btn-secondary w-100">
             Aceptar
           </button>
         </form>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

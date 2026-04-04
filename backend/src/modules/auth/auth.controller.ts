@@ -99,13 +99,19 @@ export const login = async (
       { expiresIn: '1h' }
     );
 
-    await registrarBitacora(user.IdUsuario, 'Login exitoso', {
+    await registrarBitacora(user.IdUsuario, 'Inico de sesión', {
       usuario: user.Usuario
     });
 
     return res.status(200).json({
       mensaje: 'Login exitoso',
-      token
+      token,
+      user: {
+        id: user.IdUsuario,
+        usuario: user.Usuario,
+        nombre: user.NombreUsuario,
+        apellido: user.ApellidoUsuario
+      }
     });
 
   } catch (error) {
