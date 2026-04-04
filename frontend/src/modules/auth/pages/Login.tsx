@@ -23,7 +23,7 @@ export default function Login() {
       setUser(data.user);
       setUserStorage(data.user);
 
-      navigate('/prinicipal');
+      navigate('/principal');
     } catch (error) {
       console.error(error);
       setError('Usuario o contraseña incorrectos');

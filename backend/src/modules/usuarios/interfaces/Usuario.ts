@@ -1,8 +1,9 @@
-export interface UpdateUserDTO {
+export interface Usuario {
+  idUsuario: number;
   usuario: string;
-  password: string;
   nombreUsuario: string;
   apellidoUsuario: string;
   correoElectronico: string;
-  estado: 'Activo' | 'Inactivo' | 'Bloqueado';
+  estado: string;
+  roles: string[];
 }

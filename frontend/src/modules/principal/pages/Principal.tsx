@@ -16,7 +16,7 @@ export default function Principal() {
             backgroundImage: "url('/images/logo4.png')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            height: '600px',
+            height: '700px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
