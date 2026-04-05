@@ -17,7 +17,6 @@ export default function AuthLayout({ children }: Props) {
       <div
         className="d-flex align-items-center justify-content-center"
         style={{
-          backgroundColor: 'rgba(255,255,255,0.85)',
           minHeight: '100vh'
         }}
       >

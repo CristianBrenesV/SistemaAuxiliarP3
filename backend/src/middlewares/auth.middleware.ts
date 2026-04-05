@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 
 interface JwtPayload {
   id: number;
@@ -35,7 +35,7 @@ export const verificarToken = (
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || 'losadanp3'
-    ) as unknown as JwtPayload;
+    ) as JwtPayload;
 
     if (!decoded.id || !decoded.usuario) {
       return res.status(401).json({ mensaje: 'Token inválido (payload)' });
@@ -43,11 +43,25 @@ export const verificarToken = (
 
     req.user = decoded;
 
+    const nuevoToken = jwt.sign(
+      { id: decoded.id, usuario: decoded.usuario },
+      process.env.JWT_SECRET || 'losadanp3',
+      { expiresIn: '5m' } // 👈 5 minutos siempre
+    );
+
+    res.setHeader('x-token-renewed', nuevoToken);
+
     next();
 
   } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return res.status(401).json({
+        mensaje: 'Token expirado'
+      });
+    }
+
     return res.status(401).json({
-      mensaje: 'Token inválido o expirado'
+      mensaje: 'Token inválido'
     });
   }
 };

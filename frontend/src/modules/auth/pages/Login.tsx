@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { login } from '../services/auth.service';
 import { useAuth } from '../../../core/hooks/useAuth';
 import { setToken, setUserStorage } from '../../../core/utils/storage';
@@ -13,6 +13,9 @@ export default function Login() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const mensaje = location.state?.mensaje;
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -23,7 +26,7 @@ export default function Login() {
       setUser(data.user);
       setUserStorage(data.user);
 
-      navigate('/principal');
+      navigate('/principal', { replace: true }); // mejora UX
     } catch (error) {
       console.error(error);
       setError('Usuario o contraseña incorrectos');
@@ -46,7 +49,17 @@ export default function Login() {
           <h4 className="card-title mb-3">Iniciar sesión</h4>
         </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+        {mensaje && (
+          <div className="alert alert-warning">
+            {mensaje}
+          </div>
+        )}
+
+        {error && (
+          <div className="alert alert-danger">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleLogin}>
           <div className="form-group mb-3">
@@ -72,6 +85,7 @@ export default function Login() {
               required
             />
           </div>
+
           <button type="submit" className="btn btn-secondary w-100">
             Aceptar
           </button>

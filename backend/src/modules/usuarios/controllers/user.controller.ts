@@ -122,18 +122,32 @@ export const updateUsuario = async (
     const idUsuario = currentUser?.id || 0;
 
     const id = Number(req.params.id);
-    const resultado = await actualizarUsuario(id, req.body);
+    const datos = req.body;
+
+    const usuarioActual = await obtenerUsuarioPorId(id);
+
+    const datosCompletos = {
+      usuario: datos.usuario ?? usuarioActual.usuario,
+      nombreUsuario: datos.nombreUsuario ?? usuarioActual.nombreUsuario,
+      apellidoUsuario: datos.apellidoUsuario ?? usuarioActual.apellidoUsuario,
+      correoElectronico: datos.correoElectronico ?? usuarioActual.correoElectronico,
+      estado: datos.estado ?? usuarioActual.estado
+    };
+
+    // 🔥 3. ACTUALIZAR
+    const resultado = await actualizarUsuario(id, datosCompletos);
 
     if (resultado === 1) {
       await registrarBitacora(idUsuario, 'Actualización de usuario', {
         idUsuario: id,
-        estado: req.body.estado
+        estado: datosCompletos.estado
       });
 
       return res.json({ mensaje: 'Usuario actualizado' });
     }
 
     return res.status(400).json({ mensaje: 'Error al actualizar' });
+
   } catch (error) {
     console.error('Error actualizando usuario', error);
     return res.status(500).json({ mensaje: 'Error interno' });

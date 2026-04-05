@@ -26,7 +26,7 @@ export default function AppRoutes() {
             <Route path="/test" element={<Test />} />
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/usuarios/crear" element={<UsuariosCrear />} />
-            <Route path="/usuarios/editar/:1" element={<UsuariosEditar />} />
+            <Route path="/usuarios/editar/:id" element={<UsuariosEditar />} />
           </Route>
 
         </Route>

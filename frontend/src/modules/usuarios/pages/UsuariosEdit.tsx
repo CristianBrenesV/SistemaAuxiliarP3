@@ -15,28 +15,31 @@ export default function UsuarioEditar() {
     estado: 'Activo'
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!id) return;
+useEffect(() => {
+  const fetchData = async () => {
+    if (!id) return;
 
-      const user = await obtenerUsuarioPorId(Number(id));
-      if (!user) {
-        alert('Usuario no encontrado');
-        navigate('/usuarios');
-        return;
-      }
+    const user = await obtenerUsuarioPorId(Number(id));
 
-      setForm({
-        usuario: user.usuario,
-        nombreUsuario: user.nombreUsuario,
-        apellidoUsuario: user.apellidoUsuario,
-        correoElectronico: user.correoElectronico,
-        estado: user.estado
-      });
+    if (!user) {
+      alert('Usuario no encontrado');
+      navigate('/usuarios');
+      return;
+    }
+
+    const nuevoForm = {
+      usuario: user.usuario ?? '',
+      nombreUsuario: user.nombreUsuario ?? '',
+      apellidoUsuario: user.apellidoUsuario ?? '',
+      correoElectronico: user.correoElectronico ?? '',
+      estado: user.estado ?? 'Activo'
     };
 
-    fetchData();
-  }, [id, navigate]);
+    setForm(nuevoForm);
+  };
+
+  fetchData();
+}, [id, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -77,7 +80,6 @@ export default function UsuarioEditar() {
         </button>
       </div>
 
-      {/* Card con formulario */}
       <div className="card shadow-sm border-0 p-4" style={{ maxWidth: 500, backgroundColor: '#d9d9d9' }}>
         <form id="formEditarUsuario" onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -85,7 +87,7 @@ export default function UsuarioEditar() {
             <input
               id="usuario"
               name="usuario"
-              value={form.usuario}
+              value={form.usuario || ''}
               className="form-control"
               onChange={handleChange}
             />
@@ -96,7 +98,7 @@ export default function UsuarioEditar() {
             <input
               id="nombreUsuario"
               name="nombreUsuario"
-              value={form.nombreUsuario}
+              value={form.nombreUsuario || ''}
               className="form-control"
               onChange={handleChange}
             />
@@ -107,7 +109,7 @@ export default function UsuarioEditar() {
             <input
               id="apellidoUsuario"
               name="apellidoUsuario"
-              value={form.apellidoUsuario}
+              value={form.apellidoUsuario || ''}
               className="form-control"
               onChange={handleChange}
             />
@@ -118,7 +120,7 @@ export default function UsuarioEditar() {
             <input
               id="correoElectronico"
               name="correoElectronico"
-              value={form.correoElectronico}
+              value={form.correoElectronico || ''}
               className="form-control"
               onChange={handleChange}
             />

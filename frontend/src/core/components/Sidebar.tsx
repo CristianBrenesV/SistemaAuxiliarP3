@@ -19,6 +19,10 @@ export default function Sidebar() {
 
       <ul className="nav flex-column">
 
+        <li className="mt-3">Administración</li>
+        <Link className="nav-link text-white" to="/usuarios">
+          <i className="bi bi-grid"></i> Gestión Usuarios
+        </Link>
         <li className="mt-3">Centros de Costo</li>
         <Link className="nav-link text-white" to="/centros">
           <i className="bi bi-grid"></i> Gestión Centros de Costo

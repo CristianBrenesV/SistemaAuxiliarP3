@@ -96,7 +96,7 @@ export const login = async (
     const token = jwt.sign(
       { id: user.IdUsuario, usuario: user.Usuario },
       process.env.JWT_SECRET || 'losadanp3',
-      { expiresIn: '1h' }
+      { expiresIn: '5m' }
     );
 
     await registrarBitacora(user.IdUsuario, 'Inico de sesión', {

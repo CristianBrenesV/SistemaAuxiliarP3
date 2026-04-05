@@ -110,12 +110,3 @@ code {
   background: var(--code-bg);
 }
 
-.hover-select:hover {
-  background-color: #d3d3d3; 
-  cursor: pointer;
-}
-
-.hover-select option:hover {
-  background-color: #c0c0c0; 
-  color: #000;
-}
