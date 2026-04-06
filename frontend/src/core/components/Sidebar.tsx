@@ -34,7 +34,7 @@ export default function Sidebar() {
         </Link>
 
         <li className="mt-3">Asignaciones</li>
-        <Link className="nav-link text-white" to="/asientos">
+        <Link className="nav-link text-white" to="/prorrateo">
           <i className="bi bi-journal-check"></i> Prorrateo
         </Link>
 

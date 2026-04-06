@@ -8,6 +8,7 @@ import UsuariosCrear from '../../modules/usuarios/pages/UsuariosCreate';
 import UsuariosEditar from '../../modules/usuarios/pages/UsuariosEdit';
 import PrivateRoute from './PrivateRoute';
 import MainLayout from '../layouts/MainLayout';
+import ProrrateoIndex from '../../modules/prorrateo/pages/ProrrateoIndex';
 
 export default function AppRoutes() {
   return (
@@ -27,6 +28,7 @@ export default function AppRoutes() {
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/usuarios/crear" element={<UsuariosCrear />} />
             <Route path="/usuarios/editar/:id" element={<UsuariosEditar />} />
+            <Route path="/prorrateo" element={<ProrrateoIndex />} />
           </Route>
 
         </Route>
