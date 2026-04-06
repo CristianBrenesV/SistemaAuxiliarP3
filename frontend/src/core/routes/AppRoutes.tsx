@@ -8,7 +8,10 @@ import UsuariosCrear from '../../modules/usuarios/pages/UsuariosCreate';
 import UsuariosEditar from '../../modules/usuarios/pages/UsuariosEdit';
 import PrivateRoute from './PrivateRoute';
 import MainLayout from '../layouts/MainLayout';
+
 import ProrrateoIndex from '../../modules/prorrateo/pages/ProrrateoIndex';
+import ProrrateoCostos from '../../modules/prorrateo/pages/ProrrateoCostos';
+import ProrrateoTerceros from '../../modules/prorrateo/pages/ProrrateoTerceros';
 
 export default function AppRoutes() {
   return (
@@ -16,11 +19,9 @@ export default function AppRoutes() {
       <Routes>
 
         <Route path="/login" element={<Login />} />
-
         <Route path="/" element={<Navigate to="/login" />} />
 
         <Route element={<PrivateRoute />}>
-
           <Route element={<MainLayout />}>
 
             <Route path="/principal" element={<Principal />} />
@@ -28,9 +29,13 @@ export default function AppRoutes() {
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/usuarios/crear" element={<UsuariosCrear />} />
             <Route path="/usuarios/editar/:id" element={<UsuariosEditar />} />
-            <Route path="/prorrateo" element={<ProrrateoIndex />} />
-          </Route>
 
+            {/* 🔥 PRORRATEO (SIN ANIDAR) */}
+            <Route path="/prorrateo" element={<ProrrateoIndex />} />
+            <Route path="/prorrateo/costos/:idDetalle" element={<ProrrateoCostos />} />
+            <Route path="/prorrateo/terceros/:idDetalle" element={<ProrrateoTerceros />} />
+
+          </Route>
         </Route>
 
       </Routes>

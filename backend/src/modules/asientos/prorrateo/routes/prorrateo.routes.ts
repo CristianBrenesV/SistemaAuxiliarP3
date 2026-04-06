@@ -6,6 +6,7 @@ import {
   obtenerDistribucionTercerosController
 } from '../controllers/prorrateo.controller';
 
+
 const router = Router();
 
 router.post('/', guardarProrrateoController);

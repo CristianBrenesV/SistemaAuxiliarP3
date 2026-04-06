@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../../core/api/axios";
 
 interface Periodo {
@@ -30,6 +30,8 @@ interface Detalle {
 
 export default function ProrrateoIndex() {
 
+  const navigate = useNavigate();
+
   const [periodos, setPeriodos] = useState<Periodo[]>([]);
   const [idPeriodo, setIdPeriodo] = useState<number | null>(null);
   const [estado, setEstado] = useState<number | "">("");
@@ -41,7 +43,6 @@ export default function ProrrateoIndex() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // 🔹 cargar asientos
   const cargarAsientos = async (
     periodo: number,
     estadoFiltro: number | "",
@@ -67,7 +68,6 @@ export default function ProrrateoIndex() {
     }
   };
 
-  // 🔹 cargar periodos
   useEffect(() => {
     const init = async () => {
       const res = await api.get("/periodos");
@@ -94,7 +94,6 @@ export default function ProrrateoIndex() {
     cargarAsientos(idPeriodo, estado, nueva);
   };
 
-  // 🔥 toggle detalle (como Laravel)
   const toggleDetalle = async (idAsiento: number) => {
 
     if (expandido === idAsiento) {
@@ -105,7 +104,7 @@ export default function ProrrateoIndex() {
     setExpandido(idAsiento);
 
     if (!detalles[idAsiento]) {
-      const res = await api.get(`/asientos/${idAsiento}/detalles`)
+      const res = await api.get(`/asientos/${idAsiento}/detalles`);
 
       setDetalles(prev => ({
         ...prev,
@@ -200,9 +199,7 @@ export default function ProrrateoIndex() {
               <React.Fragment key={a.IdAsiento}>
 
                 <tr>
-                  {/* 🔥 FIX consecutivo */}
                   <td>{a.Consecutivo || a.IdAsiento}</td>
-
                   <td>{new Date(a.Fecha).toLocaleDateString()}</td>
                   <td>{a.Referencia}</td>
                   <td>{getEstadoTexto(a.IdEstadoAsiento)}</td>
@@ -222,9 +219,7 @@ export default function ProrrateoIndex() {
                     <td colSpan={5} className="bg-light">
 
                       {!detalles[a.IdAsiento] && (
-                        <div className="text-center p-2">
-                          Cargando...
-                        </div>
+                        <div className="text-center p-2">Cargando...</div>
                       )}
 
                       {detalles[a.IdAsiento] && (
@@ -232,30 +227,37 @@ export default function ProrrateoIndex() {
                           <tbody>
                             {detalles[a.IdAsiento].map(d => {
 
-                              const iconCC =
-                                d.tieneCC > 0 ? "✅ CC" : "CC";
-
-                              const iconT =
-                                d.tieneTercero > 0 ? "✅ T" : "T";
-
                               return (
                                 <tr key={d.IdAsientoDetalle}>
                                   <td>{d.CodigoCuenta} - {d.Nombre}</td>
                                   <td>{d.TipoMovimiento}</td>
                                   <td>{formatearMoneda(d.Monto)}</td>
                                   <td>{d.Descripcion || "Sin descripción"}</td>
+
                                   <td>
                                     {puedeProrratear ? (
                                       <>
-                                        <Link to={`/prorrateo/costos/${d.IdAsientoDetalle}`}>
-                                          {iconCC}
-                                        </Link>{" "}
-                                        <Link to={`/prorrateo/terceros/${d.IdAsientoDetalle}`}>
-                                          {iconT}
-                                        </Link>
+                                        <button
+                                          className="btn btn-sm btn-outline-secondary me-2"
+                                          onClick={() =>
+                                            navigate(`/prorrateo/costos/${d.IdAsientoDetalle}`)
+                                          }
+                                        >
+                                          {d.tieneCC > 0 ? "✅ CC" : "CC"}
+                                        </button>
+
+                                        <button
+                                          className="btn btn-sm btn-outline-secondary"
+                                          onClick={() =>
+                                            navigate(`/prorrateo/terceros/${d.IdAsientoDetalle}`)
+                                          }
+                                        >
+                                          {d.tieneTercero > 0 ? "✅ T" : "T"}
+                                        </button>
                                       </>
                                     ) : "N/A"}
                                   </td>
+
                                 </tr>
                               );
                             })}
