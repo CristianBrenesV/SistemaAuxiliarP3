@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../core/api/axios";
+import Paginacion from "../../../core/components/Paginacion";
 
 interface Periodo {
   IdPeriodo: number;
@@ -170,7 +171,8 @@ export default function ProrrateoIndex() {
 
           <div className="col-md-2 d-flex align-items-end">
             <button className="btn btn-dark w-100" onClick={aplicarFiltros}>
-              Aplicar
+              <i className="bi bi-funnel me-2"></i>
+              Filtrar
             </button>
           </div>
 
@@ -206,9 +208,10 @@ export default function ProrrateoIndex() {
 
                   <td>
                     <button
-                      className="btn btn-sm btn-outline-primary"
+                      className="btn btn-sm btn-outline-secondary"
                       onClick={() => toggleDetalle(a.IdAsiento)}
                     >
+                      <i className="bi bi-eye me-1"></i>
                       Ver Detalle
                     </button>
                   </td>
@@ -275,26 +278,11 @@ export default function ProrrateoIndex() {
         </tbody>
       </table>
 
-      {/* PAGINACIÓN */}
-      <div className="d-flex justify-content-center mt-3 gap-2">
-        <button
-          className="btn btn-sm btn-secondary"
-          disabled={page === 1}
-          onClick={() => cambiarPagina(page - 1)}
-        >
-          Anterior
-        </button>
-
-        <span>Página {page} de {totalPages}</span>
-
-        <button
-          className="btn btn-sm btn-secondary"
-          disabled={page === totalPages}
-          onClick={() => cambiarPagina(page + 1)}
-        >
-          Siguiente
-        </button>
-      </div>
+    <Paginacion
+      page={page}
+      totalPages={totalPages}
+      onPageChange={cambiarPagina}
+    />
 
     </div>
   );
