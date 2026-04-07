@@ -3,55 +3,52 @@ import { listarAsientos, obtenerDetalles } from '../services/asiento.service';
 import { registrarBitacora } from '../../bitacora/bitacora.service';
 
 export const obtenerDetallesController = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+    try {
+        const id = Number(req.params.id);
 
-    const detalles = await obtenerDetalles(id);
+        if (isNaN(id)) {
+            return res.status(400).json({ mensaje: 'ID de asiento no válido' });
+        }
 
-    return res.json(detalles);
+        const detalles = await obtenerDetalles(id);
 
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      mensaje: 'Error obteniendo detalles',
-      error
-    });
-  }
+        if (!detalles || detalles.length === 0) {
+            return res.status(404).json({ mensaje: 'No se encontraron detalles para este asiento' });
+        }
+
+        return res.json(detalles);
+
+    } catch (error) {
+        console.error('Error al obtener detalles:', error);
+        return res.status(500).json({
+            mensaje: 'Error interno al obtener los detalles del asiento'
+        });
+    }
 };
 
 export const listarAsientosController = async (req: Request, res: Response) => {
-  try {
-    const currentUser = (req as any).user;
-    const idUsuario = currentUser?.id || 0;
+    try {
+        const currentUser = (req as any).user;
+        const idUsuario = currentUser?.id || 0;
 
-    // 🔥 FIX: evitar NaN (igual que en PHP con default)
-    const idPeriodo = req.query.id_periodo
-      ? Number(req.query.id_periodo)
-      : 1;
+        const idPeriodo = req.query.id_periodo ? Number(req.query.id_periodo) : 1;
+        const estado    = req.query.estado_id  ? Number(req.query.estado_id)  : undefined;
+        const page      = req.query.page       ? Number(req.query.page)       : 1;
 
-    const estado = req.query.estado_id
-      ? Number(req.query.estado_id)
-      : undefined;
+        const result = await listarAsientos(idPeriodo, estado, page);
 
-    const page = req.query.page
-      ? Number(req.query.page)
-      : 1;
+        await registrarBitacora(
+            idUsuario,
+            'Consulta de lista de asientos',
+            { idPeriodo, estado, pagina: page }
+        );
 
-    const result = await listarAsientos(idPeriodo, estado, page);
+        return res.json(result);
 
-    await registrarBitacora(
-      idUsuario,
-      'Consulta de asientos para prorrateo',
-      { idPeriodo, estado }
-    );
-
-    return res.json(result);
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      mensaje: 'Error listando asientos',
-      error
-    });
-  }
+    } catch (error) {
+        console.error('Error al listar asientos:', error);
+        return res.status(500).json({
+            mensaje: 'Error interno al listar los asientos contables'
+        });
+    }
 };

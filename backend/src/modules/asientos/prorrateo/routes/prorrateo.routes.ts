@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import {
-  guardarProrrateoController,
-  obtenerDetallesController,
-  obtenerDistribucionCCController,
-  obtenerDistribucionTercerosController
+    guardarProrrateoController,
+    obtenerDetallesController,
+    obtenerDistribucionCCController,
+    obtenerDistribucionTercerosController
 } from '../controllers/prorrateo.controller';
-
 
 const router = Router();
 

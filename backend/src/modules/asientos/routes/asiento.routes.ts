@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { listarAsientosController, obtenerDetallesController } from '../controllers/asiento.controller';
+import { 
+    listarAsientosController, 
+    obtenerDetallesController 
+} from '../controllers/asiento.controller';
 
 const router = Router();
 

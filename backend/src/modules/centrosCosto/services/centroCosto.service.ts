@@ -1,6 +1,5 @@
 import { pool } from '../../../config/db';
 
-// 🔹 LISTAR
 export const listarCentrosCosto = async (page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
   const connection = await pool.getConnection();
@@ -29,7 +28,6 @@ export const listarCentrosCosto = async (page = 1, limit = 10) => {
   }
 };
 
-// 🔹 CREAR
 export const crearCentroCosto = async (data: any) => {
   const connection = await pool.getConnection();
 
@@ -49,7 +47,6 @@ export const crearCentroCosto = async (data: any) => {
   }
 };
 
-// 🔹 OBTENER POR ID
 export const obtenerCentroCosto = async (id: number) => {
   const [rows]: any = await pool.query(`
     SELECT * FROM catalogocentroscostos
@@ -59,7 +56,6 @@ export const obtenerCentroCosto = async (id: number) => {
   return rows[0];
 };
 
-// 🔹 ACTUALIZAR
 export const actualizarCentroCosto = async (id: number, data: any) => {
   const connection = await pool.getConnection();
 
@@ -77,12 +73,10 @@ export const actualizarCentroCosto = async (id: number, data: any) => {
   }
 };
 
-// 🔹 ELIMINAR (con validación)
 export const eliminarCentroCosto = async (id: number) => {
   const connection = await pool.getConnection();
 
   try {
-    // validar uso
     const [rows]: any = await connection.query(`
       SELECT COUNT(*) as total
       FROM asientodetallecentrocosto

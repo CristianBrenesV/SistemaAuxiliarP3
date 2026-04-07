@@ -1,79 +1,77 @@
 import { Request, Response } from 'express';
-import { guardarProrrateo } from '../services/prorrateo.service';
+import { 
+    guardarProrrateo, 
+    obtenerDistribucionCC, 
+    obtenerDistribucionTerceros, 
+    obtenerLineaDetalle 
+} from '../services/prorrateo.service';
 import { GuardarProrrateoDTO } from '../dtos/GuardarProrrateo.dto';
-import { obtenerDetallesAsiento } from '../services/prorrateo.service';
-import { obtenerDistribucionCC, obtenerDistribucionTerceros} from '../services/prorrateo.service';
 
-export const obtenerDistribucionCCController = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const id = Number(req.params.id);
+export const obtenerDistribucionCCController = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ mensaje: 'ID de detalle inválido' });
 
-    const data = await obtenerDistribucionCC(id);
-
-    return res.json(data);
-
-  } catch (error) {
-    return res.status(500).json({ mensaje: 'Error obteniendo distribución CC' });
-  }
+        const data = await obtenerDistribucionCC(id);
+        return res.json(data);
+    } catch (error) {
+        console.error('Error CC:', error);
+        return res.status(500).json({ mensaje: 'Error obteniendo distribución de centros de costo' });
+    }
 };
 
-export const obtenerDistribucionTercerosController = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const id = Number(req.params.id);
+export const obtenerDistribucionTercerosController = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ mensaje: 'ID de detalle inválido' });
 
-    const data = await obtenerDistribucionTerceros(id);
-
-    return res.json(data);
-
-  } catch (error) {
-    return res.status(500).json({ mensaje: 'Error obteniendo distribución terceros' });
-  }
+        const data = await obtenerDistribucionTerceros(id);
+        return res.json(data);
+    } catch (error) {
+        console.error('Error Terceros:', error);
+        return res.status(500).json({ mensaje: 'Error obteniendo distribución de terceros' });
+    }
 };
 
-export const obtenerDetallesController = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const id = Number(req.params.id);
+export const obtenerDetallesController = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ mensaje: 'ID de detalle inválido' });
 
-    const detalles = await obtenerDetallesAsiento(id);
+        const detalle = await obtenerLineaDetalle(id);
+        
+        if (!detalle) {
+            return res.status(404).json({ mensaje: 'La línea de asiento no existe' });
+        }
 
-    return res.json(detalles);
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ mensaje: 'Error obteniendo detalles' });
-  }
+        return res.json(detalle);
+    } catch (error) {
+        console.error('Error Detalle Linea:', error);
+        return res.status(500).json({ mensaje: 'Error al obtener los datos de la línea' });
+    }
 };
 
 export const guardarProrrateoController = async (
-  req: Request<{}, {}, GuardarProrrateoDTO>,
-  res: Response
+    req: Request<{}, {}, GuardarProrrateoDTO>,
+    res: Response
 ) => {
-  try {
-    const currentUser = (req as any).user;
-    const idUsuario = currentUser?.id || 0;
+    try {
+        const currentUser = (req as any).user;
+        const idUsuario = currentUser?.id || 0;
 
-    const data = req.body;
+        const data = req.body;
 
-    await guardarProrrateo(data, idUsuario);
+        await guardarProrrateo(data, idUsuario);
 
-    return res.json({
-      mensaje: 'Prorrateo guardado correctamente'
-    });
+        return res.json({
+            mensaje: 'Prorrateo guardado correctamente'
+        });
 
-  } catch (error) {
-    console.error('Error en prorrateo', error);
+    } catch (error) {
+        console.error('Error en guardarProrrateo:', error);
 
-    return res.status(400).json({
-      mensaje: (error as Error).message || 'Error en prorrateo'
-    });
-  }
+        return res.status(400).json({
+            mensaje: (error as Error).message || 'Error inesperado al procesar el prorrateo'
+        });
+    }
 };
