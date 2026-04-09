@@ -4,30 +4,9 @@ export const obtenerDetalles = async (id: number) => {
     const connection = await pool.getConnection();
 
     try {
-        const query = `
-            SELECT 
-                d.IdAsientoDetalle,
-                d.IdCuentaContable,
-                c.CodigoCuenta,
-                c.Nombre,
-                d.TipoMovimiento,
-                d.Monto,
-                d.Descripcion,
-                -- Convertimos a booleano real para facilitar el manejo en el frontend
-                IF(COUNT(DISTINCT cc.IdDetalleCC) > 0, 1, 0) as tieneCC,
-                IF(COUNT(DISTINCT t.IdDetalleTercero) > 0, 1, 0) as tieneTercero
-            FROM asientocontabledetalle d
-            INNER JOIN cuentascontables c ON c.IdCuenta = d.IdCuentaContable
-            LEFT JOIN asientodetallecentrocosto cc ON cc.IdAsientoDetalle = d.IdAsientoDetalle
-            LEFT JOIN asientodetalletercero t ON t.IdAsientoDetalle = d.IdAsientoDetalle
-            WHERE d.IdAsiento = ?
-            GROUP BY 
-                d.IdAsientoDetalle, d.IdCuentaContable, c.CodigoCuenta, 
-                c.Nombre, d.TipoMovimiento, d.Monto, d.Descripcion
-        `;
+        const [rows]: any = await connection.query('CALL sp_AsientoDetalle(?)', [id]);
 
-        const [rows]: any = await connection.query(query, [id]);
-        return rows;
+        return rows[0];
 
     } finally {
         connection.release();
@@ -50,14 +29,11 @@ export const listarAsientos = async (
 
   const data = rows[0];
 
-  const [countRows]: any = await pool.query(`
-    SELECT COUNT(*) AS total
-    FROM asientocontableencabezado a
-    WHERE (? IS NULL OR a.IdPeriodo = ?)
-      AND (? IS NULL OR a.IdEstadoAsiento = ?)
-  `, [idPeriodo || null, idPeriodo || null, estado || null, estado || null]);
-
-  const total = countRows[0].total;
+  const [countRows]: any = await pool.query('CALL sp_AsientoEncabezadoConteo(?, ?)', [
+    idPeriodo || null,
+    estado || null
+  ]);
+  const total = countRows[0][0].total;
 
   return {
     data,
