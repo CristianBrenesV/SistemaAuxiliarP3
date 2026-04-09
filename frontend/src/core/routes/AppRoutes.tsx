@@ -12,6 +12,8 @@ import MainLayout from '../layouts/MainLayout';
 import ProrrateoIndex from '../../modules/prorrateo/pages/ProrrateoIndex';
 import ProrrateoCostos from '../../modules/prorrateo/pages/ProrrateoCostos';
 import ProrrateoTerceros from '../../modules/prorrateo/pages/ProrrateoTerceros';
+import ReporteCentros from '../../modules/Reportes/pages/ReporteCentros';
+import ReporteTerceros from '../../modules/Reportes/pages/ReporteTerceros';
 
 export default function AppRoutes() {
   return (
@@ -30,10 +32,12 @@ export default function AppRoutes() {
             <Route path="/usuarios/crear" element={<UsuariosCrear />} />
             <Route path="/usuarios/editar/:id" element={<UsuariosEditar />} />
 
-            {/* 🔥 PRORRATEO (SIN ANIDAR) */}
             <Route path="/prorrateo" element={<ProrrateoIndex />} />
             <Route path="/prorrateo/costos/:idDetalle" element={<ProrrateoCostos />} />
             <Route path="/prorrateo/terceros/:idDetalle" element={<ProrrateoTerceros />} />
+
+            <Route path="/reportes-centros" element={<ReporteCentros />} />
+            <Route path="/reportes-terceros" element={<ReporteTerceros />} />
 
           </Route>
         </Route>

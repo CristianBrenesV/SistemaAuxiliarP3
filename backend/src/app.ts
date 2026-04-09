@@ -8,7 +8,7 @@ import asientoRoutes from './modules/asientos/routes/asiento.routes';
 import centroCostoRoutes from './modules/centrosCosto/routes/centroCosto.routes';
 import terceroRoutes from './modules/terceros/routes/tercero.routes';
 import periodoRoutes from './modules/periodos/routes/periodo.routes';
-
+import reporteRoutes from './modules/Reportes/routes/reportes.routes';
 
 const app = express();
 
@@ -28,6 +28,8 @@ app.use('/api/asientos', asientoRoutes);
 app.use('/api/centros-costo', centroCostoRoutes);
 app.use('/api/terceros', terceroRoutes);
 app.use('/api', periodoRoutes);
+app.use('/api/reportes', reporteRoutes);
+
 
 
 app.get('/', (req, res) => {

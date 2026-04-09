@@ -1,16 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
 import api from "../../../core/api/axios";
 
-
-interface CentroCosto {
-    IdCentroCosto: number;
+interface Tercero {
+    IdTercero: number;
     Nombre: string;
 }
 
 interface Movimiento {
     Consecutivo: string;
     Fecha: string;
-    CentroCosto: string;
+    Tercero: string;
     CodigoCuenta: string;
     Cuenta: string;
     TipoMovimiento: 'D' | 'C';
@@ -23,19 +22,19 @@ interface Totales {
     diferencia: number;
 }
 
-export default function ReporteCentros() {
-    const [centros, setCentros] = useState<CentroCosto[]>([]);
+export default function ReporteTerceros() {
+    const [terceros, setTerceros] = useState<Tercero[]>([]);
     const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
     const [totales, setTotales] = useState<Totales>({ totalDebe: 0, totalHaber: 0, diferencia: 0 });
     
     const [filtros, setFiltros] = useState({
-        centro_id: "",
+        tercero_id: "",
         fecha_inicio: "",
         fecha_fin: "",
         estado_id: ""
     });
 
-    // 1. Función para buscar el reporte (Memorizada para evitar renders infinitos)
+    // 1. Función para buscar el reporte
     const buscarReporte = useCallback(async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         try {
@@ -45,7 +44,7 @@ export default function ReporteCentros() {
             });
 
             const params = new URLSearchParams(queryObj).toString();
-            const res = await api.get(`/reportes/centros?${params}`);
+            const res = await api.get(`/reportes/terceros?${params}`);
             
             setMovimientos(res.data.movimientos || []);
             setTotales({
@@ -58,15 +57,12 @@ export default function ReporteCentros() {
         }
     }, [filtros]);
 
-    // 2. Carga inicial corregida para evitar el error 'react-hooks/set-state-in-effect'
+    // 2. Carga inicial
     useEffect(() => {
         const inicializar = async () => {
             try {
-                // Carga de catálogo de centros
-                const resCentros = await api.get("/centros-costo?limit=100");
-                setCentros(resCentros.data.data || []);
-                
-                // Ejecución del reporte inicial
+                const resTerceros = await api.get("/terceros?limit=100");
+                setTerceros(resTerceros.data.data || []);
                 await buscarReporte();
             } catch (err) {
                 console.error("Error en la carga inicial:", err);
@@ -82,8 +78,7 @@ export default function ReporteCentros() {
     };
 
     const limpiarFiltros = () => {
-        setFiltros({ centro_id: "", fecha_inicio: "", fecha_fin: "", estado_id: "" });
-        // Usamos un pequeño delay para asegurar que el estado se limpie antes de re-lanzar la búsqueda
+        setFiltros({ tercero_id: "", fecha_inicio: "", fecha_fin: "", estado_id: "" });
         setTimeout(() => buscarReporte(), 0); 
     };
 
@@ -99,17 +94,17 @@ export default function ReporteCentros() {
         <div className="container mt-4">
             <div className="card shadow border-0">
                 <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h5 className="mb-0">Reporte de Movimientos por Centro de Costo</h5>
+                    <h5 className="mb-0">Reporte de Movimientos por Tercero</h5>
                 </div>
 
                 <div className="card-body">
                     <form onSubmit={buscarReporte} className="row g-3 mb-4">
                         <div className="col-md-3">
-                            <label className="form-label fw-semibold text-secondary small">Centro de costo</label>
-                            <select name="centro_id" className="form-select form-select-sm" value={filtros.centro_id} onChange={manejarCambioFiltro}>
-                                <option value="">Todos los centros</option>
-                                {centros.map(c => (
-                                    <option key={c.IdCentroCosto} value={c.IdCentroCosto}>{c.Nombre}</option>
+                            <label className="form-label fw-semibold text-secondary small">Tercero</label>
+                            <select name="tercero_id" className="form-select form-select-sm" value={filtros.tercero_id} onChange={manejarCambioFiltro}>
+                                <option value="">Todos los terceros</option>
+                                {terceros.map(t => (
+                                    <option key={t.IdTercero} value={t.IdTercero}>{t.Nombre}</option>
                                 ))}
                             </select>
                         </div>
@@ -162,7 +157,7 @@ export default function ReporteCentros() {
                                 {movimientos.length === 0 ? (
                                     <tr>
                                         <td colSpan={5} className="text-center text-muted py-5">
-                                            No se encontraron movimientos con los filtros seleccionados
+                                            No se encontraron movimientos para este tercero
                                         </td>
                                     </tr>
                                 ) : (

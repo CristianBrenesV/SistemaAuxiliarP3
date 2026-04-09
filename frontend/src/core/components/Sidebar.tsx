@@ -42,6 +42,9 @@ export default function Sidebar() {
         <Link className="nav-link text-white" to="/reportes-centros">
           <i className="bi bi-diagram-3"></i> Centros
         </Link>
+        <Link className="nav-link text-white" to="/reportes-terceros"> {/* Nuevo Link */}
+       <i className="bi bi-people"></i> Terceros
+        </Link>
 
       </ul>
     </nav>
