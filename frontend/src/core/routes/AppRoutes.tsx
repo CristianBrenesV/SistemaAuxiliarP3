@@ -12,8 +12,8 @@ import MainLayout from '../layouts/MainLayout';
 import ProrrateoIndex from '../../modules/prorrateo/pages/ProrrateoIndex';
 import ProrrateoCostos from '../../modules/prorrateo/pages/ProrrateoCostos';
 import ProrrateoTerceros from '../../modules/prorrateo/pages/ProrrateoTerceros';
-import ReporteCentros from '../../modules/Reportes/pages/ReporteCentros';
-import ReporteTerceros from '../../modules/Reportes/pages/ReporteTerceros';
+import ReporteCentros from '../../modules/reportes/pages/ReporteCentros';
+import ReporteTerceros from '../../modules/reportes/pages/ReporteTerceros';
 
 export default function AppRoutes() {
   return (

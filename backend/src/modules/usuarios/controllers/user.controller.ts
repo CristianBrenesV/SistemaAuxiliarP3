@@ -51,7 +51,7 @@ export const getUsuarioById = async (
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    return res.json({
+    return res.status(200).json({
       idUsuario: usuario.idUsuario,
       usuario: usuario.usuario,
       nombreUsuario: usuario.nombreUsuario,

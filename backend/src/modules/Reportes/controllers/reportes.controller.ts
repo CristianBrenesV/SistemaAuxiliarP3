@@ -1,54 +1,106 @@
 import { Request, Response } from 'express';
-import * as reporteService from '../services/reporte.service';
+import {
+  obtenerReporteCentros,
+  obtenerReporteTerceros
+} from '../services/reporte.service';
 import { registrarBitacora } from '../../bitacora/bitacora.service';
 
-export const obtenerReporteCentros = async (req: Request, res: Response) => {
-    try {
-        const filtros = req.query;
-        const data = await reporteService.obtenerDataReporteCentros(filtros);
+export const getReporteCentros = async (req: Request, res: Response) => {
+  try {
+    const currentUser = (req as any).user;
+    const idUsuario = currentUser?.id || 0;
 
-        // 1. Extraer ID de usuario (si tienes middleware de auth, vendría en req.user)
-        // Por ahora usamos 1 como ejemplo, o 0 si es anónimo
-        const idUsuario = 1; 
+    const {
+      centro_id,
+      fecha_inicio,
+      fecha_fin,
+      estado_id,
+      page = 1
+    } = req.query;
 
-        // 2. Llamada a TU función de bitácora
-        // idUsuario, descripcion, acciones (JSON)
-        await registrarBitacora(
-            idUsuario,
-            "Consulta de reporte por centros de costo",
-            {
-                modulo: "ReporteCC",
-                filtros_aplicados: filtros,
-                fecha_consulta: new Date().toISOString()
-            }
-        );
+    const pageNumber = Number(page) || 1;
+    const limit = 10;
+    const offset = (pageNumber - 1) * limit;
 
-        return res.status(200).json(data);
-    } catch (error) {
-        console.error("Error:", error);
-        return res.status(500).json({ message: "Error al generar reporte" });
-    }
+    const data = await obtenerReporteCentros(
+      centro_id ? Number(centro_id) : undefined,
+      fecha_inicio ? String(fecha_inicio) : undefined,
+      fecha_fin ? String(fecha_fin) : undefined,
+      estado_id ? Number(estado_id) : undefined
+    );
+
+    const total = data.movimientos.length;
+
+    const movimientosPaginados = data.movimientos.slice(offset, offset + limit);
+
+    await registrarBitacora(idUsuario, 'Consulta reporte centros de costo', {
+      modulo: 'Reportes',
+      tipo: 'CentrosCosto',
+      filtros: { centro_id, fecha_inicio, fecha_fin, estado_id }
+    });
+
+    return res.status(200).json({
+      data: movimientosPaginados,
+      total,
+      totalDebe: data.totalDebe,
+      totalHaber: data.totalHaber,
+      diferencia: data.diferencia,
+      page: pageNumber,
+      totalPages: Math.ceil(total / limit)
+    });
+
+  } catch (error) {
+    console.error('Error obteniendo reporte centros', error);
+    return res.status(500).json({ mensaje: 'Error interno' });
+  }
 };
 
-export const obtenerReporteTerceros = async (req: Request, res: Response) => {
-    try {
-        const filtros = req.query;
-        const data = await reporteService.obtenerDataReporteTerceros(filtros);
+export const getReporteTerceros = async (req: Request, res: Response) => {
+  try {
+    const currentUser = (req as any).user;
+    const idUsuario = currentUser?.id || 0;
 
-        const idUsuario = 1;
+    const {
+      tercero_id,
+      fecha_inicio,
+      fecha_fin,
+      estado_id,
+      page = 1
+    } = req.query;
 
-        await registrarBitacora(
-            idUsuario,
-            "Consulta de reporte por terceros",
-            {
-                modulo: "ReporteTerceros",
-                filtros_aplicados: filtros
-            }
-        );
+    const pageNumber = Number(page) || 1;
+    const limit = 10;
+    const offset = (pageNumber - 1) * limit;
 
-        return res.status(200).json(data);
-    } catch (error) {
-        console.error("Error:", error);
-        return res.status(500).json({ message: "Error al generar reporte" });
-    }
+    const data = await obtenerReporteTerceros(
+      tercero_id ? Number(tercero_id) : undefined,
+      fecha_inicio ? String(fecha_inicio) : undefined,
+      fecha_fin ? String(fecha_fin) : undefined,
+      estado_id ? Number(estado_id) : undefined
+    );
+
+    const total = data.movimientos.length;
+
+    const movimientosPaginados = data.movimientos.slice(offset, offset + limit);
+
+    await registrarBitacora(idUsuario, 'Consulta reporte terceros', {
+      modulo: 'Reportes',
+      tipo: 'Terceros',
+      filtros: { tercero_id, fecha_inicio, fecha_fin, estado_id }
+    });
+
+    return res.status(200).json({
+      data: movimientosPaginados,
+      total,
+      totalDebe: data.totalDebe,
+      totalHaber: data.totalHaber,
+      diferencia: data.diferencia,
+      page: pageNumber,
+      totalPages: Math.ceil(total / limit)
+    });
+
+  } catch (error) {
+    console.error('Error obteniendo reporte terceros', error);
+    return res.status(500).json({ mensaje: 'Error interno' });
+  }
 };

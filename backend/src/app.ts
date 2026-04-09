@@ -8,7 +8,7 @@ import asientoRoutes from './modules/asientos/routes/asiento.routes';
 import centroCostoRoutes from './modules/centrosCosto/routes/centroCosto.routes';
 import terceroRoutes from './modules/terceros/routes/tercero.routes';
 import periodoRoutes from './modules/periodos/routes/periodo.routes';
-import reporteRoutes from './modules/Reportes/routes/reportes.routes';
+import reporteRoutes from './modules/reportes/routes/reportes.routes';
 
 const app = express();
 

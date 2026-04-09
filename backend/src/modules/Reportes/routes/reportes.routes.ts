@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { 
-    obtenerReporteCentros, 
-    obtenerReporteTerceros 
+    getReporteCentros, 
+    getReporteTerceros 
 } from '../controllers/reportes.controller';
 
 const router = Router();
 
 // GET /api/reportes/centros
-router.get('/centros', obtenerReporteCentros);
+router.get('/centros', getReporteCentros);
 
 // GET /api/reportes/terceros
-router.get('/terceros', obtenerReporteTerceros);
+router.get('/terceros', getReporteTerceros);
 
 export default router;
