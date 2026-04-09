@@ -128,7 +128,7 @@ export default function ReporteTerceros() {
     };
 
     return (
-        <div className="container mt-4">
+        <div className="container-fluid mt-4">
             <div className="card shadow border-0">
                 <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Reporte de Movimientos por Tercero</h5>
@@ -153,7 +153,7 @@ export default function ReporteTerceros() {
                             </select>
                         </div>
 
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                             <label className="form-label fw-semibold text-secondary small">Fecha inicio</label>
                             <input
                                 type="date"
@@ -164,7 +164,7 @@ export default function ReporteTerceros() {
                             />
                         </div>
 
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                             <label className="form-label fw-semibold text-secondary small">Fecha fin</label>
                             <input
                                 type="date"
@@ -190,21 +190,22 @@ export default function ReporteTerceros() {
                             </select>
                         </div>
 
-                        <div className="col-md-1 d-flex align-items-end">
-                            <button type="submit" className="btn btn-dark btn-sm w-100 fw-bold">
-                                Buscar
-                            </button>
-                        </div>
+<div className="col-md-2 d-flex align-items-end gap-2">
+    <button type="submit" className="btn btn-dark btn-sm w-100">
+        <i className="bi bi-funnel me-1"></i>
+        Filtrar
+    </button>
 
-                        <div className="col-12 mt-2">
-                            <button
-                                type="button"
-                                onClick={limpiarFiltros}
-                                className="btn btn-link btn-sm text-decoration-none p-0 text-muted"
-                            >
-                                <i className="bi bi-x-circle me-1"></i> Limpiar filtros
-                            </button>
-                        </div>
+    <button
+        type="button"
+        onClick={limpiarFiltros}
+        className="btn btn-outline-secondary btn-sm w-100"
+    >
+        <i className="bi bi-x-circle me-1"></i>
+        Limpiar
+    </button>
+</div>
+
                     </form>
 
                     <div className="table-responsive">
