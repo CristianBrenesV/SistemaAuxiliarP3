@@ -11,12 +11,12 @@ const Paginacion: React.FC<Props> = ({ page, totalPages, onPageChange }) => {
 
   return (
     <nav aria-label="Paginación de usuarios" className="mt-4">
-      <ul className="pagination pagination-dark justify-content-center">
+      <ul className="pagination justify-content-center">
 
         {page > 1 && (
           <li className="page-item">
             <button
-              className="page-link"
+              className="page-link text-dark"
               aria-label="Anterior"
               onClick={() => onPageChange(page - 1)}
             >
@@ -26,20 +26,20 @@ const Paginacion: React.FC<Props> = ({ page, totalPages, onPageChange }) => {
         )}
 
         {paginas.map((p) => (
-        <li key={p} className="page-item">
+          <li key={p} className="page-item">
             <button
-            className={`page-link ${p === page ? "bg-dark text-white" : "bg-secondary text-dark"}`}
-            onClick={() => onPageChange(p)}
+              className={`page-link ${p === page ? "bg-dark text-white" : "bg-white text-dark"}`}
+              onClick={() => onPageChange(p)}
             >
-            {p}
+              {p}
             </button>
-        </li>
+          </li>
         ))}
 
         {page < totalPages && (
           <li className="page-item">
             <button
-              className="page-link"
+              className="page-link text-dark"
               aria-label="Siguiente"
               onClick={() => onPageChange(page + 1)}
             >

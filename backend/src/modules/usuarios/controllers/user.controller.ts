@@ -134,7 +134,6 @@ export const updateUsuario = async (
       estado: datos.estado ?? usuarioActual.estado
     };
 
-    // 🔥 3. ACTUALIZAR
     const resultado = await actualizarUsuario(id, datosCompletos);
 
     if (resultado === 1) {

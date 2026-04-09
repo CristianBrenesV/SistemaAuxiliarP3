@@ -35,58 +35,33 @@ export const obtenerDetalles = async (id: number) => {
 };
 
 export const listarAsientos = async (
-    idPeriodo: number,
-    estado?: number,
-    page: number = 1,
-    limit: number = 10
+  idPeriodo: number,
+  estado?: number,
+  page: number = 1,
+  limit: number = 10
 ) => {
-    const offset = (page - 1) * limit;
-    const connection = await pool.getConnection();
+  const offset = (page - 1) * limit;
+  const [rows]: any = await pool.query('CALL sp_asientos_listar_filtro(?, ?, ?, ?)', [
+    idPeriodo || null,
+    estado || null,
+    offset,
+    limit
+  ]);
 
-    try {
-        let whereConditions = 'WHERE IdPeriodo = ?';
-        const params: any[] = [idPeriodo];
+  const data = rows[0];
 
-        if (estado !== undefined && estado !== null) {
-            whereConditions += ' AND IdEstadoAsiento = ?';
-            params.push(estado);
-        }
+  const [countRows]: any = await pool.query(`
+    SELECT COUNT(*) AS total
+    FROM asientocontableencabezado a
+    WHERE (? IS NULL OR a.IdPeriodo = ?)
+      AND (? IS NULL OR a.IdEstadoAsiento = ?)
+  `, [idPeriodo || null, idPeriodo || null, estado || null, estado || null]);
 
-        const dataQuery = `
-            SELECT 
-                IdAsiento,
-                Consecutivo,
-                Fecha,
-                Referencia,
-                IdEstadoAsiento
-            FROM asientocontableencabezado
-            ${whereConditions}
-            ORDER BY Fecha DESC, IdAsiento DESC
-            LIMIT ? OFFSET ?
-        `;
+  const total = countRows[0].total;
 
-        const countQuery = `
-            SELECT COUNT(*) as total 
-            FROM asientocontableencabezado 
-            ${whereConditions}
-        `;
-
-        const [rows]: any = await connection.query(dataQuery, [...params, limit, offset]);
-        const [countRows]: any = await connection.query(countQuery, params);
-
-        const total = countRows[0].total;
-
-        return {
-            data: rows,
-            meta: {
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit)
-            }
-        };
-
-    } finally {
-        connection.release();
-    }
+  return {
+    data,
+    page,
+    totalPages: Math.ceil(total / limit)
+  };
 };
