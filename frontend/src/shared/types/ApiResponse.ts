@@ -1,4 +1,3 @@
-// shared/types/ApiResponse.ts
 export interface ApiResponse<T> {
   data: T;
   total?: number;

@@ -94,7 +94,7 @@ export const login = async (
     await reiniciarIntentos(usuario);
 
     const token = jwt.sign(
-      { id: user.IdUsuario, usuario: user.Usuario },
+      { id: user.IdUsuario, usuario: user.Usuario, rol: user.IdRol},
       process.env.JWT_SECRET || 'losadanp3',
       { expiresIn: '5m' }
     );

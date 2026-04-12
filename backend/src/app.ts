@@ -9,6 +9,11 @@ import centroCostoRoutes from './modules/centrosCosto/routes/centroCosto.routes'
 import terceroRoutes from './modules/terceros/routes/tercero.routes';
 import periodoRoutes from './modules/periodos/routes/periodo.routes';
 import reporteRoutes from './modules/reportes/routes/reportes.routes';
+import pantallaRoutes from './modules/pantallas/routes/pantalla.routes';
+import rolRoutes from './modules/roles/routes/rol.routes';
+import rolpantallaRoutes from './modules/rolespantallas/routes/rolpantalla.routes';
+import usuariorolRoutes from './modules/usuariosroles/routes/usuariorol..routes';
+import menuRoutes from './modules/menu/routes//menu.routes';
 
 const app = express();
 
@@ -29,8 +34,11 @@ app.use('/api/centros-costo', centroCostoRoutes);
 app.use('/api/terceros', terceroRoutes);
 app.use('/api', periodoRoutes);
 app.use('/api/reportes', reporteRoutes);
-
-
+app.use('/api/pantalla', pantallaRoutes);
+app.use('/api/rol', rolRoutes);
+app.use('/api/rolpantalla', rolpantallaRoutes);
+app.use('/api/usuariorol', usuariorolRoutes);
+app.use('/api', menuRoutes);
 
 app.get('/', (req, res) => {
   res.send('Backend up');

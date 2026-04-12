@@ -4,6 +4,7 @@ import jwt, { TokenExpiredError } from 'jsonwebtoken';
 interface JwtPayload {
   id: number;
   usuario: string;
+  rol: string; 
 }
 
 export interface AuthRequest extends Request {
@@ -37,16 +38,20 @@ export const verificarToken = (
       process.env.JWT_SECRET || 'losadanp3'
     ) as JwtPayload;
 
-    if (!decoded.id || !decoded.usuario) {
+    if (!decoded.id || !decoded.usuario || !decoded.rol) {
       return res.status(401).json({ mensaje: 'Token inválido (payload)' });
     }
 
     req.user = decoded;
 
     const nuevoToken = jwt.sign(
-      { id: decoded.id, usuario: decoded.usuario },
+      {
+        id: decoded.id,
+        usuario: decoded.usuario,
+        rol: decoded.rol 
+      },
       process.env.JWT_SECRET || 'losadanp3',
-      { expiresIn: '5m' } // 👈 5 minutos siempre
+      { expiresIn: '5m' }
     );
 
     res.setHeader('x-token-renewed', nuevoToken);
