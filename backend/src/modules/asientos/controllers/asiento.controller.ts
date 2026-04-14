@@ -5,24 +5,14 @@ import { registrarBitacora } from '../../bitacora/bitacora.service';
 export const obtenerDetallesController = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
-
-        if (isNaN(id)) {
-            return res.status(400).json({ mensaje: 'ID de asiento no válido' });
-        }
+        if (isNaN(id)) return res.status(400).json({ mensaje: 'ID no válido' });
 
         const detalles = await obtenerDetalles(id);
 
-        if (!detalles || detalles.length === 0) {
-            return res.status(404).json({ mensaje: 'No se encontraron detalles para este asiento' });
-        }
-
-        return res.json(detalles);
+        return res.json(detalles || []); 
 
     } catch (error) {
-        console.error('Error al obtener detalles:', error);
-        return res.status(500).json({
-            mensaje: 'Error interno al obtener los detalles del asiento'
-        });
+        // ... error 500
     }
 };
 

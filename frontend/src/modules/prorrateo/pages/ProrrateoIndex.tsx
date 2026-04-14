@@ -96,22 +96,26 @@ export default function ProrrateoIndex() {
   };
 
   const toggleDetalle = async (idAsiento: number) => {
+      if (expandido === idAsiento) {
+          setExpandido(null);
+          return;
+      }
 
-    if (expandido === idAsiento) {
-      setExpandido(null);
-      return;
-    }
+      setExpandido(idAsiento);
 
-    setExpandido(idAsiento);
+      if (!detalles[idAsiento]) {
+          try {
+              const res = await api.get(`/asientos/${idAsiento}/detalles`);
+              const dataLimpia = Array.isArray(res.data) ? res.data : (res.data.data || []);
 
-    if (!detalles[idAsiento]) {
-      const res = await api.get(`/asientos/${idAsiento}/detalles`);
-
-      setDetalles(prev => ({
-        ...prev,
-        [idAsiento]: res.data.data || res.data
-      }));
-    }
+              setDetalles(prev => ({
+                  ...prev,
+                  [idAsiento]: dataLimpia
+              }));
+          } catch (error) {
+              console.error("Error al cargar detalles:", error);
+          }
+      }
   };
 
   const formatearMoneda = (monto: number) =>
@@ -122,11 +126,19 @@ export default function ProrrateoIndex() {
 
   const getEstadoTexto = (estado: number) => {
     switch (estado) {
-      case 1: return "Borrador";
-      case 2: return "Pendiente";
-      case 3: return "Aprobado";
-      default: return `Estado ${estado}`;
-    }
+        case 1: 
+          return <span className="badge rounded-pill bg-secondary shadow-sm">Borrador</span>;
+        case 2:
+          return <span className="badge rounded-pill bg-warning text-dark shadow-sm">Pendiente</span>;
+        case 3:
+          return <span className="badge rounded-pill bg-success shadow-sm">Aprobado</span>;
+        case 4: 
+          return <span className="badge rounded-pill bg-danger shadow-sm">Rechazado</span>;
+        case 5: 
+          return <span className="badge rounded-pill bg-dark shadow-sm">Anulado</span>;
+        default:
+          return <span className="badge rounded-pill bg-light text-dark border">Estado {estado}</span>;
+      }
   };
 
   return (
