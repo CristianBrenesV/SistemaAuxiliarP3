@@ -51,27 +51,19 @@ export const obtenerDetallesController = async (req: Request, res: Response) => 
     }
 };
 
-export const guardarProrrateoController = async (
-    req: Request<{}, {}, GuardarProrrateoDTO>,
-    res: Response
-) => {
+export const guardarProrrateoController = async (req: Request, res: Response) => {
     try {
         const currentUser = (req as any).user;
         const idUsuario = currentUser?.id || 0;
-
         const data = req.body;
 
-        await guardarProrrateo(data, idUsuario);
+        // "resultado" ahora contiene el objeto con datos, no solo un booleano
+        const resultado = await guardarProrrateo(data, idUsuario);
 
-        return res.json({
-            mensaje: 'Prorrateo guardado correctamente'
-        });
+        // Cumplimos con el Profe: Status 200 y Body con información útil
+        return res.status(200).json(resultado); 
 
     } catch (error) {
-        console.error('Error en guardarProrrateo:', error);
-
-        return res.status(400).json({
-            mensaje: (error as Error).message || 'Error inesperado al procesar el prorrateo'
-        });
+        return res.status(400).json({ mensaje: (error as Error).message });
     }
 };

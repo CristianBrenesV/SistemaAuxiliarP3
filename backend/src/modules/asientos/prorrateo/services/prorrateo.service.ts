@@ -74,7 +74,8 @@ export const guardarProrrateo = async (data: GuardarProrrateoDTO, idUsuario: num
 
         if (!estadoRows.length) throw new Error('La línea del asiento no existe.');
 
-        const { IdEstadoAsiento, Monto: montoOriginal } = estadoRows[0];
+        const IdEstadoAsiento = estadoRows[0].IdEstadoAsiento;
+        const montoOriginal = Number(estadoRows[0].Monto); 
 
         if (![1, 2].includes(IdEstadoAsiento)) {
             throw new Error('Solo se puede prorratear asientos en estado Borrador o Pendiente.');
@@ -94,17 +95,11 @@ export const guardarProrrateo = async (data: GuardarProrrateoDTO, idUsuario: num
         await connection.query(`DELETE FROM ${tablaDestino} WHERE IdAsientoDetalle = ?`, [id_detalle]);
 
         for (const item of distribucion) {
-            if (es_tercero) {
-                await connection.query(`
-                    INSERT INTO asientodetalletercero (IdAsientoDetalle, IdTercero, Monto, Porcentaje, Nota)
-                    VALUES (?, ?, ?, ?, ?)
-                `, [id_detalle, item.id_destino, item.monto, item.porcentaje, item.nota || null]);
-            } else {
-                await connection.query(`
-                    INSERT INTO asientodetallecentrocosto (IdAsientoDetalle, IdCentroCosto, Monto, Porcentaje, Nota)
-                    VALUES (?, ?, ?, ?, ?)
-                `, [id_detalle, item.id_destino, item.monto, item.porcentaje, item.nota || null]);
-            }
+            const query = es_tercero 
+                ? `INSERT INTO asientodetalletercero (IdAsientoDetalle, IdTercero, Monto, Porcentaje, Nota) VALUES (?, ?, ?, ?, ?)`
+                : `INSERT INTO asientodetallecentrocosto (IdAsientoDetalle, IdCentroCosto, Monto, Porcentaje, Nota) VALUES (?, ?, ?, ?, ?)`;
+            
+            await connection.query(query, [id_detalle, item.id_destino, item.monto, item.porcentaje, item.nota || null]);
         }
 
         await registrarBitacora(idUsuario, 
@@ -113,7 +108,15 @@ export const guardarProrrateo = async (data: GuardarProrrateoDTO, idUsuario: num
         );
 
         await connection.commit();
-        return true;
+
+        return {
+            id_detalle,
+            es_tercero,
+            total_prorrateado: totalEnviado,
+            lineas_procesadas: distribucion.length,
+            fecha: new Date().toISOString(),
+            detalle: distribucion 
+        };
 
     } catch (error) {
         await connection.rollback();
