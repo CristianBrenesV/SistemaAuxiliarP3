@@ -16,7 +16,9 @@ export const login = async (
   const { usuario, password } = req.body;
 
   if (!usuario || !password) {
-    return res.status(400).json({ mensaje: 'Usuario y contraseña son requeridos' });
+    return res.status(400).json({
+      mensaje: 'Usuario y contraseña son requeridos'
+    });
   }
 
   try {
@@ -29,7 +31,9 @@ export const login = async (
         usuario
       });
 
-      return res.status(401).json({ mensaje: 'Usuario no existe' });
+      return res.status(404).json({
+        mensaje: 'Usuario no existe'
+      });
     }
 
     if (user.Estado === 'Bloqueado') {
@@ -37,7 +41,9 @@ export const login = async (
         usuario: user.Usuario
       });
 
-      return res.status(403).json({ mensaje: 'Usuario bloqueado' });
+      return res.status(403).json({
+        mensaje: 'Usuario bloqueado'
+      });
     }
 
     if (user.Estado === 'Inactivo') {
@@ -45,7 +51,9 @@ export const login = async (
         usuario: user.Usuario
       });
 
-      return res.status(403).json({ mensaje: 'Usuario inactivo' });
+      return res.status(403).json({
+        mensaje: 'Usuario inactivo'
+      });
     }
 
     const nonce = Buffer.isBuffer(user.Nonce)
@@ -81,10 +89,14 @@ export const login = async (
     if (passwordDescifrada !== password) {
       const intentos = await registrarIntentoFallido(usuario);
 
-      await registrarBitacora(user.IdUsuario, 'Login fallido - contraseña incorrecta', {
-        usuario: user.Usuario,
-        intentos
-      });
+      await registrarBitacora(
+        user.IdUsuario,
+        'Login fallido - contraseña incorrecta',
+        {
+          usuario: user.Usuario,
+          intentos
+        }
+      );
 
       return res.status(401).json({
         mensaje: `Contraseña incorrecta. Intentos: ${intentos}`
@@ -94,12 +106,12 @@ export const login = async (
     await reiniciarIntentos(usuario);
 
     const token = jwt.sign(
-      { id: user.IdUsuario, usuario: user.Usuario, rol: user.IdRol},
+      { id: user.IdUsuario, usuario: user.Usuario, rol: user.IdRol },
       process.env.JWT_SECRET || 'losadanp3',
       { expiresIn: '5m' }
     );
 
-    await registrarBitacora(user.IdUsuario, 'Inico de sesión', {
+    await registrarBitacora(user.IdUsuario, 'Inicio de sesión', {
       usuario: user.Usuario
     });
 
@@ -115,6 +127,8 @@ export const login = async (
     });
 
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({
       mensaje: 'Error interno del servidor'
     });
