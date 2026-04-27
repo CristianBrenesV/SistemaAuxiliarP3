@@ -1,0 +1,10 @@
+export declare const listarUsuariosRoles: (limit: number, offset: number) => Promise<any>;
+export declare const contarUsuariosRoles: () => Promise<any>;
+export declare const listarPorUsuario: (idUsuario: number) => Promise<any>;
+export declare const listarPorRol: (idRol: string) => Promise<any>;
+export declare const listarRolesPorUsuario: (idUsuario: number) => Promise<any>;
+export declare const listarRolesActivosPorUsuario: (idUsuario: number) => Promise<any>;
+export declare const listarUsuariosPorRol: (idRol: string) => Promise<any>;
+export declare const insertarUsuarioRol: (idUsuario: number, idRol: string) => Promise<void>;
+export declare const eliminarUsuarioRol: (idUsuario: number, idRol: string) => Promise<any>;
+//# sourceMappingURL=usuariorol.service.d.ts.map

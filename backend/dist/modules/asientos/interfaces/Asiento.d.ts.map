@@ -1,0 +1,1 @@
+{"version":3,"file":"Asiento.d.ts","sourceRoot":"","sources":["../../../../src/modules/asientos/interfaces/Asiento.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,OAAO;IACtB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,SAAS,EAAE,MAAM,CAAC;IAClB,eAAe,EAAE,MAAM,CAAC;IACxB,SAAS,EAAE,MAAM,CAAC;IAClB,KAAK,CAAC,EAAE,IAAI,CAAC;IACb,UAAU,EAAE,MAAM,CAAC;CACpB"}

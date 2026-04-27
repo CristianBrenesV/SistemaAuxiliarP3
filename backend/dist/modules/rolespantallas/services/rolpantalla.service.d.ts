@@ -1,0 +1,9 @@
+export declare const listarRolesPantallas: (limit: number, offset: number) => Promise<any>;
+export declare const contarRolesPantallas: () => Promise<any>;
+export declare const listarPorRol: (idRol: string) => Promise<any>;
+export declare const listarPantallasPorRol: (idRol: string) => Promise<any>;
+export declare const listarConEstado: (idRol: string) => Promise<any>;
+export declare const insertarRolPantalla: (idRol: string, idPantalla: number) => Promise<void>;
+export declare const eliminarRolPantalla: (idRol: string, idPantalla: number) => Promise<any>;
+export declare const actualizarRolPantallas: (idRol: string, pantallas: number[]) => Promise<any>;
+//# sourceMappingURL=rolpantalla.service.d.ts.map
