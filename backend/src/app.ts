@@ -14,6 +14,8 @@ import rolRoutes from './modules/roles/routes/rol.routes';
 import rolpantallaRoutes from './modules/rolespantallas/routes/rolpantalla.routes';
 import usuariorolRoutes from './modules/usuariosroles/routes/usuariorol..routes';
 import menuRoutes from './modules/menu/routes//menu.routes';
+import direccionRoutes from './modules/terceroDirecciones/routes/direccion.routes';
+import contactoRoutes from './modules/terceroContactos/routes/contacto.routes';
 
 const app = express();
 
@@ -39,6 +41,8 @@ app.use('/api/rol', rolRoutes);
 app.use('/api/rolpantalla', rolpantallaRoutes);
 app.use('/api/usuariorol', usuariorolRoutes);
 app.use('/api', menuRoutes);
+app.use('/api/terceros/:idTercero/direcciones', direccionRoutes);
+app.use('/api/terceros/:idTercero/contactos', contactoRoutes);
 
 app.get('/', (req, res) => {
   res.send('Backend up');
