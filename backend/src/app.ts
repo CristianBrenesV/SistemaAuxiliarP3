@@ -19,7 +19,6 @@ import contactoRoutes from './modules/terceroContactos/routes/contacto.routes';
 
 const app = express();
 
-//enlace al front
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
