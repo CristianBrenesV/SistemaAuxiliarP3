@@ -21,13 +21,18 @@ const AES_KEY = Buffer.from(
 export const getUsuarios = async (req: Request, res: Response) => {
   try {
     const page = Number(req.query.page) || 1;
+
+    if (page < 1) {
+      return res.status(400).json({ mensaje: 'Página inválida' });
+    }
+
     const limit = 10;
     const offset = (page - 1) * limit;
 
     const usuarios = await listarUsuarios(limit, offset);
     const total = await contarUsuarios();
 
-    return res.json({
+    return res.status(200).json({
       data: usuarios,
       total,
       page,
@@ -45,13 +50,18 @@ export const getUsuarioById = async (
 ) => {
   try {
     const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ mensaje: 'ID inválido' });
+    }
+
     const usuario = await obtenerUsuarioPorId(id);
 
     if (!usuario) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    return res.json({
+    return res.status(200).json({
       idUsuario: usuario.idUsuario,
       usuario: usuario.usuario,
       nombreUsuario: usuario.nombreUsuario,
@@ -74,7 +84,14 @@ export const createUsuario = async (
     const currentUser = (req as any).user;
     const idUsuario = currentUser?.id || 0;
 
-    const { usuario, password, nombreUsuario, apellidoUsuario, correoElectronico, estado } = req.body;
+    const {
+      usuario,
+      password,
+      nombreUsuario,
+      apellidoUsuario,
+      correoElectronico,
+      estado
+    } = req.body;
 
     if (!usuario || !password) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
@@ -90,16 +107,24 @@ export const createUsuario = async (
 
     const tag = cipher.getAuthTag();
 
-    await insertarUsuario({
-      usuario,
-      claveCifrada: encrypted,
-      nombreUsuario,
-      apellidoUsuario,
-      correoElectronico,
-      tag,
-      nonce,
-      estado: estado || 'Activo'
-    });
+    try {
+      await insertarUsuario({
+        usuario,
+        claveCifrada: encrypted,
+        nombreUsuario,
+        apellidoUsuario,
+        correoElectronico,
+        tag,
+        nonce,
+        estado: estado || 'Activo'
+      });
+    } catch (err: any) {
+
+      if (err.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ mensaje: 'El usuario ya existe' });
+      }
+      throw err;
+    }
 
     await registrarBitacora(idUsuario, 'Creación de usuario', {
       usuario,
@@ -107,6 +132,7 @@ export const createUsuario = async (
     });
 
     return res.status(201).json({ mensaje: 'Usuario creado' });
+
   } catch (error) {
     console.error('Error creando usuario', error);
     return res.status(500).json({ mensaje: 'Error interno' });
@@ -122,9 +148,18 @@ export const updateUsuario = async (
     const idUsuario = currentUser?.id || 0;
 
     const id = Number(req.params.id);
-    const datos = req.body;
+
+    if (!id) {
+      return res.status(400).json({ mensaje: 'ID inválido' });
+    }
 
     const usuarioActual = await obtenerUsuarioPorId(id);
+
+    if (!usuarioActual) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    const datos = req.body;
 
     const datosCompletos = {
       usuario: datos.usuario ?? usuarioActual.usuario,
@@ -134,7 +169,6 @@ export const updateUsuario = async (
       estado: datos.estado ?? usuarioActual.estado
     };
 
-    // 🔥 3. ACTUALIZAR
     const resultado = await actualizarUsuario(id, datosCompletos);
 
     if (resultado === 1) {
@@ -143,10 +177,10 @@ export const updateUsuario = async (
         estado: datosCompletos.estado
       });
 
-      return res.json({ mensaje: 'Usuario actualizado' });
+      return res.status(200).json({ mensaje: 'Usuario actualizado' });
     }
 
-    return res.status(400).json({ mensaje: 'Error al actualizar' });
+    return res.status(400).json({ mensaje: 'No se pudo actualizar' });
 
   } catch (error) {
     console.error('Error actualizando usuario', error);
@@ -160,6 +194,11 @@ export const deleteUsuario = async (req: Request, res: Response) => {
     const idUsuario = currentUser?.id || 0;
 
     const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ mensaje: 'ID inválido' });
+    }
+
     const resultado = await eliminarUsuario(id);
 
     if (resultado === 1) {
@@ -167,10 +206,11 @@ export const deleteUsuario = async (req: Request, res: Response) => {
         idUsuario: id
       });
 
-      return res.json({ mensaje: 'Usuario eliminado' });
+      return res.status(204).send();
     }
 
-    return res.status(400).json({ mensaje: 'Error al eliminar' });
+    return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+
   } catch (error) {
     console.error('Error eliminando usuario', error);
     return res.status(500).json({ mensaje: 'Error interno' });
@@ -184,6 +224,10 @@ export const cambiarEstadoUsuario = async (req: Request, res: Response) => {
 
     const { id, estado } = req.body;
 
+    if (!id || !estado) {
+      return res.status(400).json({ mensaje: 'Datos incompletos' });
+    }
+
     await cambiarEstado(id, estado);
 
     await registrarBitacora(idUsuario, 'Cambio de estado de usuario', {
@@ -191,7 +235,8 @@ export const cambiarEstadoUsuario = async (req: Request, res: Response) => {
       nuevoEstado: estado
     });
 
-    return res.json({ mensaje: 'Estado actualizado' });
+    return res.status(200).json({ mensaje: 'Estado actualizado' });
+
   } catch (error) {
     console.error('Error cambiando estado', error);
     return res.status(500).json({ mensaje: 'Error interno' });
@@ -204,6 +249,10 @@ export const cambiarClaveUsuario = async (req: Request, res: Response) => {
     const idUsuario = currentUser?.id || 0;
 
     const { id, password } = req.body;
+
+    if (!id || !password) {
+      return res.status(400).json({ mensaje: 'Datos incompletos' });
+    }
 
     const nonce = crypto.randomBytes(12);
     const cipher = crypto.createCipheriv('aes-256-gcm', AES_KEY, nonce);
@@ -221,7 +270,8 @@ export const cambiarClaveUsuario = async (req: Request, res: Response) => {
       idUsuario: id
     });
 
-    return res.json({ mensaje: 'Clave actualizada' });
+    return res.status(200).json({ mensaje: 'Clave actualizada' });
+
   } catch (error) {
     console.error('Error cambiando clave', error);
     return res.status(500).json({ mensaje: 'Error interno' });
