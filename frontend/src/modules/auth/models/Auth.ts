@@ -3,4 +3,5 @@ export interface AuthUser {
   usuario: string;
   nombre: string;
   apellido: string;
+  rol: string;
 }

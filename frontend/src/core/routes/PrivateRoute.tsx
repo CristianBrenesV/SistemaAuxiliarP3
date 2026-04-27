@@ -9,7 +9,7 @@ export default function PrivateRoute() {
 ) : (
   <Navigate
     to="/login"
-    state={{ mensaje: 'Debes iniciar sesión para acceder' }}
+    state={{ mensaje: 'Por favor inicie sesión para utilizar el sistema' }}
     replace
   />
 );

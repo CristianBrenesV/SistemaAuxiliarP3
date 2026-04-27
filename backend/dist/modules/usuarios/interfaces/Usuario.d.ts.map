@@ -1,0 +1,1 @@
+{"version":3,"file":"Usuario.d.ts","sourceRoot":"","sources":["../../../../src/modules/usuarios/interfaces/Usuario.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,OAAO;IACtB,SAAS,EAAE,MAAM,CAAC;IAClB,OAAO,EAAE,MAAM,CAAC;IAChB,aAAa,EAAE,MAAM,CAAC;IACtB,eAAe,EAAE,MAAM,CAAC;IACxB,iBAAiB,EAAE,MAAM,CAAC;IAC1B,MAAM,EAAE,MAAM,CAAC;IACf,KAAK,EAAE,MAAM,EAAE,CAAC;CACjB"}

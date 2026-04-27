@@ -3,8 +3,8 @@ import type { Usuario } from '../models/Usuario';
 import type { CrearUsuarioDTO, ActualizarUsuarioDTO } from '../models/UsuarioDTO';
 import type { ApiResponse } from '../../../shared/types/ApiResponse';
 
-export const obtenerUsuarios = async (): Promise<ApiResponse<Usuario[]>> => {
-  const res = await api.get<ApiResponse<Usuario[]>>('/usuarios');
+export const obtenerUsuarios = async (page: number = 1): Promise<ApiResponse<Usuario[]>> => {
+  const res = await api.get<ApiResponse<Usuario[]>>(`/usuarios?page=${page}`);
   return res.data;
 };
 

@@ -26,7 +26,7 @@ export default function Login() {
       setUser(data.user);
       setUserStorage(data.user);
 
-      navigate('/principal', { replace: true }); // mejora UX
+      navigate('/principal', { replace: true });
     } catch (error) {
       console.error(error);
       setError('Usuario o contraseña incorrectos');

@@ -1,0 +1,1 @@
+{"version":3,"file":"UsuarioResponse.d.ts","sourceRoot":"","sources":["../../../../src/modules/usuarios/interfaces/UsuarioResponse.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,MAAM,WAAW,eAAe;IAC9B,IAAI,EAAE,OAAO,EAAE,CAAC;IAChB,KAAK,EAAE,MAAM,CAAC;IACd,IAAI,EAAE,MAAM,CAAC;IACb,UAAU,EAAE,MAAM,CAAC;CACpB"}

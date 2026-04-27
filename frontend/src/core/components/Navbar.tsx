@@ -33,17 +33,17 @@ export default function Navbar() {
           data-bs-toggle="dropdown"
         />
 
-        <ul className="dropdown-menu dropdown-menu-end p-2">
-          <li>
-            <button
-              className="btn btn-outline-secondary w-100 d-flex align-items-center"
-              onClick={logout}
-            >
-              <i className="bi bi-box-arrow-right me-2"></i>
-              Cerrar sesión
-            </button>
-          </li>
-        </ul>
+       <ul className="dropdown-menu dropdown-menu-end p-2">
+        <li>
+          <button
+            className="btn btn-outline-secondary w-100 d-flex align-items-center text-nowrap"
+            onClick={logout}
+          >
+            <i className="bi bi-box-arrow-right me-2"></i>
+            Cerrar sesión
+          </button>
+        </li>
+      </ul>
       </div>
     </div>
   );
